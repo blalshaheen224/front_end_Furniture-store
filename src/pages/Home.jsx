@@ -18,18 +18,22 @@ import {
   Wine,
   Laptop,
 } from 'lucide-react';
-import { getHomePageData } from '../services/product.service';
+import {
+  getHomePageData,
+  getFeaturedProducts,
+  getLatestProducts,
+  getProductsOnOffer,
+} from '../services/product.service';
 import Container from '../components/UI/Container';
 import ProductCard from '../components/Product/ProductCard';
 
 export default function Home() {
   const [homeData, setHomeData] = useState({
     categories: [],
-    featured: [],
-    latest: [],
-    mostViewed: [],
     offers: [],
   });
+  const [featured, setFeatured] = useState([]);
+  const [latest, setLatest] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -41,8 +45,28 @@ export default function Home() {
     setLoading(true);
     setError(null);
     try {
-      const response = await getHomePageData();
-      if (response.success) setHomeData(response.data);
+      // ✅ جلب البيانات من endpoints منفصلة بالتوازي
+      const [homeResponse, featuredResponse, latestResponse, offersResponse] = await Promise.all([
+        getHomePageData(),
+        getFeaturedProducts(8),
+        getLatestProducts(8),
+        getProductsOnOffer(8),
+      ]);
+
+      if (homeResponse.success) {
+        setHomeData({
+          categories: homeResponse.data.categories,
+          offers: offersResponse.success ? offersResponse.data : [],
+        });
+      }
+
+      if (featuredResponse.success) {
+        setFeatured(featuredResponse.data);
+      }
+
+      if (latestResponse.success) {
+        setLatest(latestResponse.data);
+      }
     } catch (err) {
       console.error('Error:', err);
       setError('حدث خطأ أثناء تحميل البيانات');
@@ -123,7 +147,7 @@ export default function Home() {
   return (
     <div className="page-transition bg-neutral-50">
       {/* ══════════════════════════════════════════════════════
-         HERO SECTION - Mobile First (تم الإصلاح)
+         HERO SECTION
       ═══════════════════════════════════════════════════════ */}
       <section className="relative bg-gradient-to-br from-royal-950 via-burgundy-900 to-royal-950 text-white overflow-hidden">
         {/* Decorative */}
@@ -140,18 +164,18 @@ export default function Home() {
               </span>
             </div>
 
-            {/* ✅ Title - نص واضح وقوي */}
+            {/* Title */}
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-black mb-4 leading-tight">
               <span className="block text-white">أثاث يليق</span>
               <span className="block gradient-gold">بذوقك الرفيع</span>
             </h1>
 
-            {/* ✅ Description - نص أبيض واضح */}
+            {/* Description */}
             <p className="text-base md:text-lg text-white leading-relaxed mb-8 px-4 font-medium">
               اكتشف مجموعتنا الفريدة من الأثاث المنزلي المصنوع بأجود الخامات
             </p>
 
-            {/* ✅ CTA - أزرار واضحة */}
+            {/* CTA */}
             <div className="flex flex-col sm:flex-row gap-3 px-4 justify-center">
               <Link
                 to="/products"
@@ -172,7 +196,7 @@ export default function Home() {
             <div className="flex gap-8 pt-8 mt-8 border-t border-white/10 justify-center">
               <div>
                 <div className="text-2xl md:text-3xl font-black text-gold-400">
-                  +{homeData.featured.length * 50}
+                  +{featured.length * 50}
                 </div>
                 <div className="text-xs text-white font-semibold mt-1">قطعة أثاث</div>
               </div>
@@ -223,7 +247,8 @@ export default function Home() {
          ROOM SECTIONS
       ═══════════════════════════════════════════════════════ */}
       {roomSections.map((section) => {
-        const sectionProducts = homeData.featured.filter(
+        // ✅ فلترة المنتجات المميزة حسب الفئة
+        const sectionProducts = featured.filter(
           (p) => p.category === section.category
         );
 
@@ -268,9 +293,9 @@ export default function Home() {
       })}
 
       {/* ═════════════════════════════════════════════════════
-         FEATURED PRODUCTS
+         ✅ FEATURED PRODUCTS - من endpoint منفصل
       ═══════════════════════════════════════════════════════ */}
-      {homeData.featured.length > 0 && (
+      {featured.length > 0 && (
         <section className="py-8 md:py-12 bg-neutral-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
@@ -286,7 +311,7 @@ export default function Home() {
                 </div>
               </div>
               <Link
-                to="/products"
+                to="/products?isFeatured=true"
                 className="flex items-center gap-1 text-gold-700 font-bold text-sm hover:gap-2 transition-all"
               >
                 عرض الكل
@@ -295,7 +320,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {homeData.featured.slice(0, 8).map((product) => (
+              {featured.slice(0, 8).map((product) => (
                 <ProductCard
                   key={product._id}
                   product={product}
@@ -308,9 +333,9 @@ export default function Home() {
       )}
 
       {/* ══════════════════════════════════════════════════════
-         LATEST PRODUCTS
+         ✅ LATEST PRODUCTS - من endpoint منفصل
       ═══════════════════════════════════════════════════════ */}
-      {homeData.latest.length > 0 && (
+      {latest.length > 0 && (
         <section className="py-8 md:py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
@@ -335,7 +360,47 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {homeData.latest.slice(0, 8).map((product) => (
+              {latest.slice(0, 8).map((product) => (
+                <ProductCard
+                  key={product._id}
+                  product={product}
+                  variant="compact"
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════
+         ✅ OFFERS - من endpoint منفصل
+      ═══════════════════════════════════════════════════════ */}
+      {homeData.offers.length > 0 && (
+        <section className="py-8 md:py-12 bg-gradient-to-br from-burgundy-50 to-gold-50">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center">
+                  <Package className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold font-display text-royal-950">
+                    عروض خاصة
+                  </h2>
+                  <p className="text-xs text-royal-700 font-medium">خصومات لا تُفوَّت</p>
+                </div>
+              </div>
+              <Link
+                to="/products?onOffer=true"
+                className="flex items-center gap-1 text-gold-700 font-bold text-sm hover:gap-2 transition-all"
+              >
+                عرض الكل
+                <ChevronLeft className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {homeData.offers.slice(0, 8).map((product) => (
                 <ProductCard
                   key={product._id}
                   product={product}
