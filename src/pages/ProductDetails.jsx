@@ -23,6 +23,8 @@ import { useWishlist } from '../hooks/useWishlist';
 import { getProductBySlug, getProductsByCategory } from '../services/product.service';
 import { generateSingleProductMessage, openWhatsApp } from '../utils/whatsapp';
 
+import SEO from '../components/SEO/SEO';
+
 export default function ProductDetails() {
   const { slug } = useParams();
   const { addToCart } = useCart();
@@ -171,6 +173,27 @@ export default function ProductDetails() {
   };
 
   return (
+    <>
+    <SEO
+      title={`${product.name} | BLAL - أثاث فاخر`}
+      description={`${product.name} بسعر ${product.offerPrice || product.price} جنيه. ${product.material} ${product.color}. ${product.description.substring(0, 150)}...`}
+      keywords={`${product.name}, ${product.category}, ${product.material}, ${product.color}, أثاث, BLAL`}
+      canonicalUrl={productUrl}
+      ogImage={productImage}
+      ogType="product"
+    />
+    
+    <ProductSchema product={product} />
+    
+    <BreadcrumbSchema
+      items={[
+        { name: 'الرئيسية', url: 'https://furniture-store-5d3.pages.dev/' },
+        { name: 'المنتجات', url: 'https://furniture-store-5d3.pages.dev/products' },
+        { name: product.category, url: `https://furniture-store-5d3.pages.dev/products?category=${product.category}` },
+        { name: product.name, url: productUrl },
+      ]}
+    />
+
     <div className="pt-20 pb-16 bg-neutral-50">
       <Container className="py-8">
         {/* Breadcrumbs */}
@@ -402,5 +425,6 @@ export default function ProductDetails() {
         )}
       </Container>
     </div>
+    </>
   );
 }

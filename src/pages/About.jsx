@@ -11,6 +11,7 @@ import {
   ArrowRight,
   CheckCircle,
 } from 'lucide-react';
+import SEO from '../components/SEO/SEO';
 
 export default function About() {
   const features = [
@@ -53,6 +54,14 @@ export default function About() {
   ];
 
   return (
+    <>
+    <SEO
+      title="من نحن | BLAL - قصة معرض الأثاث الفاخر"
+      description="تعرف على قصة BLAL أكثر من 10 سنوات خبرة في عالم الأثاث المنزلي الفاخر في مصر. نقدم لك أفضل القطع المصنوعة بعناية."
+      keywords="من نحن, BLAL, قصة المعرض, أثاث مصر, معرض أثاث"
+      canonicalUrl="https://furniture-store-5d3.pages.dev/about"
+      // ogImage="https://alfein.com/about-og.jpg"
+    />
     <div>
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-br from-wood-800 via-wood-900 to-charcoal text-white overflow-hidden">
@@ -289,5 +298,6 @@ export default function About() {
         </Container>
       </section>
     </div>
+    </>
   );
 }

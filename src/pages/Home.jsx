@@ -27,6 +27,8 @@ import {
 import Container from '../components/UI/Container';
 import ProductCard from '../components/Product/ProductCard';
 
+import SEO from '../components/SEO/SEO';
+
 export default function Home() {
   const [homeData, setHomeData] = useState({
     categories: [],
@@ -145,6 +147,14 @@ export default function Home() {
   }
 
   return (
+    <>
+    <SEO
+      title="BLAL - أثاث منزلي فاخر | معرض الأثاث الراقي في مصر"
+      description="اكتشف أفخم قطع الأثاث المنزلي في BLAL. غرف معيشة، نوم، سفرة، ومكاتب بأعلى جودة وأفضل الأسعار. توصيل مجاني وضمان 5 سنوات."
+      keywords="أثاث منزلي, أثاث فاخر, معرض أثاث, BLAL, غرف معيشة, غرف نوم"
+      canonicalUrl="https://furniture-store-5d3.pages.dev"
+      ogImage="https://furniture-store-5d3.pages.dev/home-og.jpg"
+    />
     <div className="page-transition bg-neutral-50">
       {/* ══════════════════════════════════════════════════════
          HERO SECTION
@@ -443,5 +453,6 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </>
   );
 }
