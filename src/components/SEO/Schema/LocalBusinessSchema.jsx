@@ -5,7 +5,7 @@ export default function LocalBusinessSchema() {
     '@context': 'https://schema.org',
     '@type': 'FurnitureStore',
     name: 'BLAL Furniture Gallery',
-    image: 'hhttps://furniture-store-5d3.pages.dev/store-image.jpg',
+    // image: 'hhttps://furniture-store-5d3.pages.dev/store-image.jpg',
     '@id': 'https://furniture-store-5d3.pages.dev',
     url: 'https://furniture-store-5d3.pages.dev',
     telephone: '+20-101-234-5678',

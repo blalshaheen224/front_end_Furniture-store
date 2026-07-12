@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet-async';
 export default function MetaTags({
   title = 'BLAL - أثاث منزلي فاخر',
   description = 'اكتشف أفخم قطع الأثاث المنزلي في BLAL. غرف معيشة، نوم، سفرة، ومكاتب بأعلى جودة وأفضل الأسعار. توصيل مجاني وضمان 5 سنوات.',
-  keywords = 'أثاث منزلي, أثاث فاخر, معرض أثاث, BLAL, غرف معيشة, غرف نوم, أثاث مصر',
-  canonicalUrl = 'https://furniture-store-5d3.pages.dev',
+  keywords = 'أثاث منزلي, أثاث فاخر, معرض أثاث, BLAL, اثاث,غرف معيشة, غرف نوم, أثاث مصر,موبايليا', 
+  canonicalUrl = 'https://furniture-store-5d3.pages.dev', 
   robots = 'index, follow',
   author = 'ALFEIN Furniture Gallery',
   viewport = 'width=device-width, initial-scale=1.0',
@@ -12,9 +12,8 @@ export default function MetaTags({
   language = 'ar',
   geo = {
     region: 'EG-C',
-    position: '30.0444,31.2357', // القاهرة
-    placename: 'القاهرة، مصر',
-    placename: ''
+    position: '31.4165,31.8133', // دمياط
+    placename: 'دمياط , مصر',
 
   },
 }) {

@@ -23,6 +23,10 @@ import { useWishlist } from '../hooks/useWishlist';
 import { getProductBySlug, getProductsByCategory } from '../services/product.service';
 import { generateSingleProductMessage, openWhatsApp } from '../utils/whatsapp';
 
+
+import ProductSchema from '../components/SEO/Schema/ProductSchema';
+import BreadcrumbSchema from '../components/SEO/Schema/BreadcrumbSchema';
+
 import SEO from '../components/SEO/SEO';
 
 export default function ProductDetails() {
@@ -141,6 +145,10 @@ export default function ProductDetails() {
   const currentPrice = product.offerPrice || product.price;
   const totalPrice = currentPrice * quantity;
 
+    // ✅ عرّف المتغيرات المفقودة
+  const productUrl = `/products/${product.slug}`;
+  const productImage = product.primImg || product.images?.[0]?.url || '';
+
   const handleAddToCart = () => {
     addToCart(product, quantity);
   };
@@ -156,7 +164,7 @@ export default function ProductDetails() {
   const handleShare = async () => {
     const shareData = {
       title: product.name,
-      text: `شاهد هذا المنتج الرائع من ALFEIN: ${product.name}`,
+      text: `شاهد هذا المنتج الرائع من BLAL: ${product.name}`,
       url: window.location.href,
     };
 
@@ -296,44 +304,52 @@ export default function ProductDetails() {
               <p className="text-royal-700 leading-relaxed">{product.description}</p>
             </div>
 
-            {/* Specifications */}
-            <div className="bg-white border border-neutral-200 rounded-2xl p-6">
-              <h3 className="font-bold text-royal-950 mb-4 text-lg">المواصفات</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-royal-600 mb-1 font-medium">المادة</p>
-                  <p className="font-bold text-royal-950">{product.material}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-royal-600 mb-1 font-medium">اللون</p>
-                  <p className="font-bold text-royal-950">{product.color}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-royal-600 mb-1 font-medium">الحجم</p>
-                  <p className="font-bold text-royal-950">{product.size || 'متوسط'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-royal-600 mb-1 font-medium">الوزن</p>
-                  <p className="font-bold text-royal-950">{product.weight} كجم</p>
-                </div>
-                {product.dimensions && (
-                  <div className="col-span-2">
-                    <p className="text-xs text-royal-600 mb-1 font-medium">الأبعاد</p>
-                    <p className="font-bold text-royal-950">
-                      {product.dimensions.width} × {product.dimensions.height} ×{' '}
-                      {product.dimensions.depth} {product.dimensions.unit}
-                    </p>
-                  </div>
-                )}
-                <div className="col-span-2">
-                  <p className="text-xs text-royal-600 mb-1 font-medium">الحالة</p>
-                  <p className={`font-bold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {product.stock > 0 ? `متوفر (${product.stock} قطعة)` : 'غير متوفر'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
+{/* Specifications */}
+<div className="bg-white border border-neutral-200 rounded-2xl p-6">
+  <h3 className="font-bold text-royal-950 mb-4 text-lg">المواصفات</h3>
+  <div className="grid grid-cols-2 gap-4">
+    
+    {/* ✅ إخفاء المادة إذا كانت Rattan */}
+    {product.material !== 'Rattan' && (
+      <div>
+        <p className="text-xs text-royal-600 mb-1 font-medium">المادة</p>
+        <p className="font-bold text-royal-950">{product.material}</p>
+      </div>
+    )}
+    
+    {/* ✅ إخفاء اللون إذا كان Walnut */}
+    {product.color !== 'Walnut' && (
+      <div>
+        <p className="text-xs text-royal-600 mb-1 font-medium">اللون</p>
+        <p className="font-bold text-royal-950">{product.color}</p>
+      </div>
+    )}
+    
+    <div>
+      <p className="text-xs text-royal-600 mb-1 font-medium">الحجم</p>
+      <p className="font-bold text-royal-950">{product.size || 'متوسط'}</p>
+    </div>
+    <div>
+      <p className="text-xs text-royal-600 mb-1 font-medium">الوزن</p>
+      <p className="font-bold text-royal-950">{product.weight} كجم</p>
+    </div>
+    {product.dimensions && (
+      <div className="col-span-2">
+        <p className="text-xs text-royal-600 mb-1 font-medium">الأبعاد</p>
+        <p className="font-bold text-royal-950">
+          {product.dimensions.width} × {product.dimensions.height} ×{' '}
+          {product.dimensions.depth} {product.dimensions.unit}
+        </p>
+      </div>
+    )}
+    <div className="col-span-2">
+      <p className="text-xs text-royal-600 mb-1 font-medium">الحالة</p>
+      <p className={`font-bold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+        {product.stock > 0 ? `متوفر (${product.stock} قطعة)` : 'غير متوفر'}
+      </p>
+    </div>
+  </div>
+</div>
             {/* Quantity */}
             {product.stock > 0 && (
               <QuantitySelector
